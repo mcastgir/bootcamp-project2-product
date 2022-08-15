@@ -14,9 +14,13 @@
 
 package com.nttdata.bootcamp.product.controller;
 
+import com.nttdata.bootcamp.product.model.document.Product;
 import com.nttdata.bootcamp.product.model.document.ProductType;
 import com.nttdata.bootcamp.product.service.ProductTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,8 +41,9 @@ public class ProductTypeController {
      * @return Mono retorna el ProductType, tipo Mono
      */
     @PostMapping
-    public Mono<ProductType> create(@RequestBody ProductType productType){
-        return this.productTypeService.insert(productType);
+    public Mono<ResponseEntity<ProductType>> create(@RequestBody ProductType productType){
+        return this.productTypeService.insert(productType)
+                .map(p -> new ResponseEntity<>(p, HttpStatus.OK));
     }
 
     /**
@@ -46,8 +51,9 @@ public class ProductTypeController {
      * @return Mono retorna el ProductType, tipo Mono
      */
     @PutMapping
-    public Mono<ProductType> update(@RequestBody ProductType productType){
-        return this.productTypeService.update(productType);
+    public Mono<ResponseEntity<ProductType>> update(@RequestBody ProductType productType){
+        return this.productTypeService.update(productType)
+                .map(p -> new ResponseEntity<>(p, HttpStatus.OK));
     }
 
     /**
@@ -55,8 +61,9 @@ public class ProductTypeController {
      * @return Mono retorna el Void, tipo Mono
      */
     @DeleteMapping("/{id}")
-    public Mono<Void> delete(@PathVariable String id) {
-        return this.productTypeService.delete(id);
+    public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
+        return this.productTypeService.delete(id)
+                .map(v -> new ResponseEntity<>(v, HttpStatus.OK));
     }
 
     /**
@@ -64,8 +71,11 @@ public class ProductTypeController {
      * @return Mono retorna el ProductType, tipo String
      */
     @GetMapping("/{id}")
-    public Mono<ProductType> find(@PathVariable String id) {
-        return this.productTypeService.find(id);
+    public Mono<ResponseEntity<ProductType>> find(@PathVariable String id) {
+        return this.productTypeService.find(id)
+                .map(productType -> ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(productType));
     }
 
     /**
@@ -73,8 +83,11 @@ public class ProductTypeController {
      * @return Mono retorna el ProductType, tipo String
      */
     @GetMapping("/findByCode/{code}")
-    public Mono<ProductType> findByCode(@PathVariable String code) {
-        return this.productTypeService.findByCode(code);
+    public Mono<ResponseEntity<ProductType>> findByCode(@PathVariable String code) {
+        return this.productTypeService.findByCode(code)
+                .map(productType -> ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(productType));
     }
 
     /**
@@ -82,8 +95,12 @@ public class ProductTypeController {
      * @return Flux retorna el ProductType, tipo Flux
      */
     @GetMapping
-    public Flux<ProductType> findAll() {
-        return this.productTypeService.findAll();
+    public Mono<ResponseEntity<Flux<ProductType>>> findAll() {
+        return Mono.just(
+                ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(this.productTypeService.findAll())
+        );
     }
 
 }
