@@ -1,12 +1,8 @@
 spring:
   application:
     name: product
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/db_bank_product
   cloud:
     config:
       uri: http://localhost:8084
       username: root
       password: rHQPJeecA3YTdVkX
-
